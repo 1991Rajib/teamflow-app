@@ -1,26 +1,212 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ============================================================
+   TeamFlow — Design Tokens
+   Source of truth: docs/global.md (10 rules)
+   Every component reads colors from these tokens.
+   ============================================================ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Page */
+  --background: #f8fafc;          /* slate-50   — page background */
+  --foreground: #0f172a;          /* slate-900  — primary text */
+
+  /* Surfaces (elevation hierarchy) */
+  --surface-1: #ffffff;           /* cards, dropdowns, modals */
+  --surface-2: #f1f5f9;           /* slate-100  — inputs, nested surfaces */
+  --surface-3: #e2e8f0;           /* slate-200  — hover over surface-1 */
+  --surface-inverse: #0f172a;     /* slate-900  — dark inline surface */
+  --surface-muted: #f8fafc;       /* slate-50   — sidebar/header */
+
+  /* Borders */
+  --border: #e2e8f0;              /* slate-200  — default */
+  --border-strong: #cbd5e1;       /* slate-300  — emphasized */
+  --border-subtle: #f1f5f9;       /* slate-100  — very faint dividers */
+
+  /* Text hierarchy */
+  --text-primary: #0f172a;        /* slate-900 */
+  --text-secondary: #475569;      /* slate-600 */
+  --text-muted: #64748b;          /* slate-500 */
+  --text-disabled: #94a3b8;       /* slate-400 */
+  --text-on-primary: #ffffff;
+  --text-on-destructive: #ffffff;
+  --text-placeholder: #94a3b8;    /* slate-400 */
+
+  /* Brand — single primary across the product (Rule 1) */
+  --brand-50: #eff6ff;
+  --brand-100: #dbeafe;
+  --brand-200: #bfdbfe;
+  --brand-500: #3b82f6;
+  --brand-600: #2563eb;           /* primary action background */
+  --brand-700: #1d4ed8;           /* primary action hover */
+  --brand-foreground: #ffffff;    /* text on primary action */
+  --brand-tint: rgba(37, 99, 235, 0.10);   /* selected/active surface */
+  --brand-tint-strong: rgba(37, 99, 235, 0.18);
+  --brand-ring: rgba(59, 130, 246, 0.50);  /* focus ring */
+
+  /* Secondary action (neutral) */
+  --secondary-bg: #ffffff;
+  --secondary-bg-hover: #f1f5f9;
+  --secondary-border: #e2e8f0;
+  --secondary-border-hover: #cbd5e1;
+  --secondary-text: #334155;
+  --secondary-text-hover: #0f172a;
+
+  /* Semantic — Success (Rule 4) */
+  --success-50: #ecfdf5;
+  --success-500: #10b981;         /* emerald-500 */
+  --success-600: #059669;         /* emerald-600 */
+  --success-tint: rgba(16, 185, 129, 0.10);
+  --success-border: rgba(16, 185, 129, 0.20);
+  --success-text: #059669;
+  --success-text-soft: #34d399;   /* dark mode emphasis */
+
+  /* Semantic — Warning */
+  --warning-50: #fffbeb;
+  --warning-500: #f59e0b;         /* amber-500 */
+  --warning-600: #d97706;
+  --warning-tint: rgba(245, 158, 11, 0.10);
+  --warning-border: rgba(245, 158, 11, 0.20);
+  --warning-text: #d97706;
+  --warning-text-soft: #fbbf24;
+
+  /* Semantic — Error */
+  --error-50: #fef2f2;
+  --error-500: #ef4444;
+  --error-600: #dc2626;
+  --error-tint: rgba(239, 68, 68, 0.10);
+  --error-border: rgba(239, 68, 68, 0.20);
+  --error-text: #dc2626;
+  --error-text-soft: #f87171;
+
+  /* Semantic — Info */
+  --info-50: #eff6ff;
+  --info-500: #3b82f6;
+  --info-600: #2563eb;
+  --info-tint: rgba(59, 130, 246, 0.10);
+  --info-border: rgba(59, 130, 246, 0.20);
+  --info-text: #2563eb;
+  --info-text-soft: #60a5fa;
+
+  /* Destructive action (Rule 3) */
+  --destructive-500: #ef4444;
+  --destructive-600: #dc2626;
+  --destructive-700: #b91c1c;
+  --destructive-tint: rgba(239, 68, 68, 0.10);
+  --destructive-border: rgba(239, 68, 68, 0.20);
+  --destructive-text: #dc2626;
+  --destructive-text-soft: #f87171;
+
+  /* Status palette (Rule 9) — task/project status only.
+     Distinct from success/error/warning semantics. */
+  --status-todo: #64748b;         /* slate-500  — neutral */
+  --status-todo-tint: rgba(100, 116, 139, 0.10);
+  --status-progress: #2563eb;     /* blue-600   — in progress */
+  --status-progress-tint: rgba(37, 99, 235, 0.10);
+  --status-done: #059669;         /* emerald-600 */
+  --status-done-tint: rgba(5, 150, 105, 0.10);
+  --status-low: #0ea5e9;          /* sky-500    — priority low */
+  --status-low-tint: rgba(14, 165, 233, 0.10);
+  --status-medium: #f59e0b;       /* amber-500  — priority medium */
+  --status-medium-tint: rgba(245, 158, 11, 0.10);
+  --status-high: #dc2626;         /* red-600    — priority high */
+  --status-high-tint: rgba(220, 38, 38, 0.10);
+
+  /* Plan / Pro accent (used sparingly on Upgrade CTAs only) */
+  --accent-500: #f43f5e;          /* rose-500 — Pro/Upgrade accent */
+  --accent-600: #e11d48;
+  --accent-tint: rgba(244, 63, 94, 0.10);
+  --accent-border: rgba(244, 63, 94, 0.20);
+  --accent-text: #e11d48;
+  --accent-text-soft: #fb7185;
 }
 
+.dark {
+  /* Page */
+  --background: #070a13;
+  --foreground: #f1f5f9;
+
+  /* Surfaces */
+  --surface-1: #0f172a;           /* slate-900  — cards */
+  --surface-2: #1e293b;           /* slate-800  — inputs */
+  --surface-3: #334155;           /* slate-700  — hover */
+  --surface-inverse: #f8fafc;
+  --surface-muted: #0b1220;
+
+  /* Borders */
+  --border: #1e293b;              /* slate-800  — default in dark */
+  --border-strong: #334155;       /* slate-700 */
+  --border-subtle: #172033;
+
+  /* Text hierarchy */
+  --text-primary: #f1f5f9;        /* slate-100 */
+  --text-secondary: #cbd5e1;      /* slate-300 */
+  --text-muted: #94a3b8;          /* slate-400 */
+  --text-disabled: #64748b;       /* slate-500 */
+  --text-placeholder: #64748b;
+
+  /* Brand */
+  --brand-tint: rgba(37, 99, 235, 0.18);
+  --brand-tint-strong: rgba(37, 99, 235, 0.25);
+
+  /* Secondary */
+  --secondary-bg: #0f172a;
+  --secondary-bg-hover: #1e293b;
+  --secondary-border: #1e293b;
+  --secondary-border-hover: #334155;
+  --secondary-text: #cbd5e1;
+  --secondary-text-hover: #f8fafc;
+}
+
+/* Map the tokens into Tailwind's @theme so utility classes pick them up. */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-surface-muted: var(--surface-muted);
+
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-disabled: var(--text-disabled);
+
+  --color-brand-50: var(--brand-50);
+  --color-brand-100: var(--brand-100);
+  --color-brand-500: var(--brand-500);
+  --color-brand-600: var(--brand-600);
+  --color-brand-700: var(--brand-700);
+
+  --color-success-500: var(--success-500);
+  --color-success-600: var(--success-600);
+  --color-warning-500: var(--warning-500);
+  --color-warning-600: var(--warning-600);
+  --color-error-500: var(--error-500);
+  --color-error-600: var(--error-600);
+  --color-info-500: var(--info-500);
+  --color-info-600: var(--info-600);
+
+  --color-destructive-500: var(--destructive-500);
+  --color-destructive-600: var(--destructive-600);
+  --color-destructive-700: var(--destructive-700);
+
+  --color-accent-500: var(--accent-500);
+  --color-accent-600: var(--accent-600);
+
+  --font-sans: var(--font-plus-jakarta-sans);
+  --font-mono: var(--font-geist-mono);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
