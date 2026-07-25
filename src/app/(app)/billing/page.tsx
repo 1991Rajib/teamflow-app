@@ -107,14 +107,14 @@ export default async function BillingPage() {
       <section
         aria-label="Current subscription plan"
         className={`rounded-2xl p-6 border flex flex-col sm:flex-row sm:items-center gap-5 shadow-lg ${isPro
-            ? 'bg-gradient-to-br from-violet-900/30 to-indigo-900/20 border-violet-500/30'
-            : 'bg-white dark:bg-[#1e293b]/40 border-slate-200 dark:border-slate-800/80'
+          ? 'bg-gradient-to-br from-indigo-50 to-white dark:from-indigo-900/30 dark:to-indigo-900/10 border-indigo-200 dark:border-indigo-500/30 shadow-indigo-500/10 dark:shadow-indigo-900/20'
+          : 'bg-white dark:bg-[#1e293b]/40 border-slate-200 dark:border-slate-800/80'
           }`}
       >
         <div
           className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${isPro
-              ? 'bg-violet-500/20 border border-violet-500/30 text-violet-300'
-              : 'bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-slate-600 dark:text-slate-400'
+            ? 'bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-500/30'
+            : 'bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-slate-600 dark:text-slate-400'
             }`}
         >
           {isPro ? (
@@ -128,8 +128,8 @@ export default async function BillingPage() {
             <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-200">{planName}</h2>
             <span
               className={`px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider ${isPro
-                  ? 'bg-violet-500/20 text-violet-700 dark:text-violet-300 border border-violet-500/30'
-                  : 'bg-slate-100 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-600/60'
+                ? 'bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-500/30'
+                : 'bg-slate-100 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-600/60'
                 }`}
             >
               {isPro ? 'Active' : 'Free'}
@@ -436,8 +436,8 @@ function PlanCard({
   return (
     <div
       className={`relative rounded-2xl p-6 border flex flex-col gap-5 shadow-lg transition ${isHighlighted
-          ? 'bg-gradient-to-br from-indigo-50 to-white dark:from-indigo-900/30 dark:to-indigo-900/10 border-indigo-200 dark:border-indigo-500/30 shadow-indigo-500/10 dark:shadow-indigo-900/20'
-          : 'bg-white dark:bg-[#1e293b]/40 border-slate-200 dark:border-slate-800/80'
+        ? 'bg-gradient-to-br from-indigo-50 to-white dark:from-indigo-900/30 dark:to-indigo-900/10 border-indigo-200 dark:border-indigo-500/30 shadow-indigo-500/10 dark:shadow-indigo-900/20'
+        : 'bg-white dark:bg-[#1e293b]/40 border-slate-200 dark:border-slate-800/80'
         }`}
     >
       {isHighlighted && (
