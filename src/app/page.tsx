@@ -56,7 +56,7 @@ export default async function LandingPage() {
             {session?.user ? (
               <Link
                 href="/dashboard"
-                className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition shadow-sm"
+                className="hidden md:flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition shadow-sm"
               >
                 Go to Dashboard
                 <ArrowRight className="w-4 h-4" />
@@ -71,7 +71,7 @@ export default async function LandingPage() {
                 </Link>
                 <Link
                   href="/register"
-                  className="px-5 py-2.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition shadow-sm"
+                  className="hidden md:inline-flex px-5 py-2.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition shadow-sm"
                 >
                   Sign Up
                 </Link>
@@ -85,18 +85,18 @@ export default async function LandingPage() {
       {/* 2. Hero Section */}
       <section className="pt-40 md:pt-44 pb-16 md:pb-20 overflow-hidden bg-gradient-to-b from-white to-slate-50/50 dark:from-[#070a13] dark:to-slate-900/50">
         <div className="max-w-[1400px] mx-auto px-6 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          <div className="max-w-2xl gsap-fade-up">
+          <div className="max-w-2xl mx-auto lg:mx-0 text-center lg:text-left gsap-fade-up">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 text-indigo-700 dark:text-indigo-400 text-xs font-semibold mb-6">
               <span className="w-2 h-2 rounded-full bg-indigo-600 dark:bg-indigo-500"></span>
               NEW: TEAMFLOW AI INTEGRATION
             </div>
-            <h1 className="text-5xl lg:text-7xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-[1.05] mb-6">
+            <h1 className="text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-[1.1] mb-6">
               Bring Your Team's <br className="hidden lg:block" /> Work Together In <br className="hidden lg:block" /> One Place
             </h1>
-            <p className="text-xl text-slate-500 dark:text-slate-400 mb-10 max-w-lg leading-relaxed">
+            <p className="text-lg md:text-xl text-slate-500 dark:text-slate-400 mb-8 md:mb-10 max-w-lg mx-auto lg:mx-0 leading-relaxed">
               TeamFlow is the unified platform where strategy meets execution. Centralize projects, tasks, and communication seamlessly.
             </p>
-            <div className="flex flex-col sm:flex-row items-center gap-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
               <Link
                 href={session?.user ? "/dashboard" : "/register"}
                 className="w-full sm:w-auto px-8 py-3.5 text-base font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition shadow-lg shadow-indigo-600/20 text-center"
@@ -108,9 +108,9 @@ export default async function LandingPage() {
 
           <div className="relative gsap-fade-up">
             {/* Dashboard Image */}
-            <div className="relative rounded-2xl bg-white dark:bg-[#070a13] border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden aspect-[4/3] transform lg:translate-x-12 lg:scale-105 pointer-events-none select-none flex items-center justify-center">
-              <img src="/dashboard-light.jpeg" alt="Dashboard Preview" className="w-full h-full object-cover object-left-top dark:hidden" />
-              <img src="/dashboard-dark.jpeg" alt="Dashboard Preview" className="w-full h-full object-cover object-left-top hidden dark:block" />
+            <div className="relative rounded-2xl bg-white dark:bg-[#070a13] border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden aspect-video transform lg:translate-x-12 lg:scale-105 pointer-events-none select-none flex items-center justify-center">
+              <img src="/dashboard-light.jpeg" alt="Dashboard Preview" className="w-full h-full object-cover object-top dark:hidden" />
+              <img src="/dashboard-dark.jpeg" alt="Dashboard Preview" className="w-full h-full object-cover object-top hidden dark:block" />
             </div>
 
             {/* Decorative Floating Elements */}
@@ -128,16 +128,32 @@ export default async function LandingPage() {
       </section>
 
       {/* 3. Logo Cloud */}
-      <section className="py-8 md:py-12 border-y border-slate-100 dark:border-slate-800/50">
+      <section className="py-8 md:py-12 border-y border-slate-100 dark:border-slate-800/50 overflow-hidden">
         <div className="max-w-[1400px] mx-auto px-6">
-          <p className="text-center text-sm font-semibold text-slate-400 dark:text-slate-500 mb-8 tracking-widest uppercase">Trusted by forward-thinking teams</p>
-          <div className="flex flex-wrap justify-center items-center gap-12 lg:gap-24 opacity-40 dark:opacity-30 grayscale">
-            <h3 className="text-2xl font-bold font-serif">Acme Corp</h3>
-            <h3 className="text-2xl font-bold">Quantum</h3>
-            <h3 className="text-2xl font-bold font-mono">Globex</h3>
-            <h3 className="text-2xl font-bold tracking-tighter">Soylent</h3>
-            <h3 className="text-2xl font-bold italic">Initech</h3>
-            <h3 className="text-2xl font-bold">Stark Ind.</h3>
+          <p className="text-center text-sm font-semibold text-slate-400 dark:text-slate-500 mb-8 tracking-widest uppercase whitespace-nowrap">Trusted by forward-thinking teams</p>
+          
+          {/* Marquee Container */}
+          <div className="relative flex overflow-hidden group [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+            <div className="flex w-max animate-[marquee_30s_linear_infinite] group-hover:[animation-play-state:paused] items-center opacity-40 dark:opacity-30 grayscale">
+              {/* Set 1 */}
+              <div className="flex items-center gap-12 lg:gap-24 pr-12 lg:pr-24">
+                <h3 className="text-2xl font-bold font-serif whitespace-nowrap">Acme Corp</h3>
+                <h3 className="text-2xl font-bold whitespace-nowrap">Quantum</h3>
+                <h3 className="text-2xl font-bold font-mono whitespace-nowrap">Globex</h3>
+                <h3 className="text-2xl font-bold tracking-tighter whitespace-nowrap">Soylent</h3>
+                <h3 className="text-2xl font-bold italic whitespace-nowrap">Initech</h3>
+                <h3 className="text-2xl font-bold whitespace-nowrap">Stark Ind.</h3>
+              </div>
+              {/* Set 2 (Duplicate for seamless loop) */}
+              <div className="flex items-center gap-12 lg:gap-24 pr-12 lg:pr-24">
+                <h3 className="text-2xl font-bold font-serif whitespace-nowrap">Acme Corp</h3>
+                <h3 className="text-2xl font-bold whitespace-nowrap">Quantum</h3>
+                <h3 className="text-2xl font-bold font-mono whitespace-nowrap">Globex</h3>
+                <h3 className="text-2xl font-bold tracking-tighter whitespace-nowrap">Soylent</h3>
+                <h3 className="text-2xl font-bold italic whitespace-nowrap">Initech</h3>
+                <h3 className="text-2xl font-bold whitespace-nowrap">Stark Ind.</h3>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -147,7 +163,7 @@ export default async function LandingPage() {
         <div className="max-w-[1400px] mx-auto px-6 grid lg:grid-cols-2 gap-12 lg:gap-24">
           {/* Problem */}
           <div className="space-y-6 gsap-fade-up">
-            <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white leading-tight">
+            <h2 className="text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl font-extrabold text-slate-900 dark:text-white leading-tight">
               Stop Managing Your Work<br /> Across Too Many Tools
             </h2>
             <div className="space-y-4 pt-4 gsap-stagger">
@@ -167,7 +183,7 @@ export default async function LandingPage() {
 
           {/* Solution */}
           <div className="space-y-6 gsap-fade-up">
-            <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white leading-tight">
+            <h2 className="text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl font-extrabold text-slate-900 dark:text-white leading-tight">
               TeamFlow Brings Everything<br /> Together
             </h2>
             <div className="space-y-4 pt-4 gsap-stagger">
@@ -191,7 +207,7 @@ export default async function LandingPage() {
       <section id="features" className="py-16 md:py-24 bg-slate-50/50 dark:bg-slate-900/20 border-y border-slate-100 dark:border-slate-800/50">
         <div className="max-w-[1400px] mx-auto px-6">
           <div className="text-center mb-16 gsap-fade-up">
-            <h2 className="text-4xl font-extrabold text-slate-900 dark:text-white">Everything Your Team Needs to Get Work Done</h2>
+            <h2 className="text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-extrabold text-slate-900 dark:text-white">Everything Your Team Needs to Get Work Done</h2>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 gsap-stagger">
@@ -219,15 +235,15 @@ export default async function LandingPage() {
       <section className="py-16 md:py-24 overflow-hidden relative">
         <div className="max-w-[1400px] mx-auto px-6 text-center">
           <div className="gsap-fade-up">
-            <h2 className="text-4xl font-extrabold text-slate-900 dark:text-white mb-4">See Your Work. Know What's Next.</h2>
-            <p className="text-xl text-slate-500 dark:text-slate-400 mb-16 max-w-2xl mx-auto">Get absolute clarity on company priorities and individual responsibilities.</p>
+            <h2 className="text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl font-extrabold text-slate-900 dark:text-white mb-4">See Your Work. Know What's Next.</h2>
+            <p className="text-lg md:text-xl text-slate-500 dark:text-slate-400 mb-12 md:mb-16 max-w-2xl mx-auto">Get absolute clarity on company priorities and individual responsibilities.</p>
           </div>
 
           <div className="relative max-w-5xl mx-auto gsap-fade-up">
             {/* Center Dashboard Image */}
-            <div className="rounded-2xl bg-white dark:bg-[#070a13] shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800 aspect-[4/3] lg:aspect-[16/9] relative z-10 pointer-events-none select-none flex items-center justify-center">
-              <img src="/dashboard-light.jpeg" alt="Dashboard Preview" className="w-full h-full object-cover object-left-top dark:hidden" />
-              <img src="/dashboard-dark.jpeg" alt="Dashboard Preview" className="w-full h-full object-cover object-left-top hidden dark:block" />
+            <div className="rounded-2xl bg-white dark:bg-[#070a13] shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800 aspect-video relative z-10 pointer-events-none select-none flex items-center justify-center">
+              <img src="/dashboard-light.jpeg" alt="Dashboard Preview" className="w-full h-full object-cover object-top dark:hidden" />
+              <img src="/dashboard-dark.jpeg" alt="Dashboard Preview" className="w-full h-full object-cover object-top hidden dark:block" />
             </div>
 
             {/* Floating cards around showcase */}
@@ -247,8 +263,8 @@ export default async function LandingPage() {
       <section id="how-it-works" className="py-16 md:py-24 bg-slate-950 text-white">
         <div className="max-w-[1400px] mx-auto px-6">
           <div className="text-center mb-20 gsap-fade-up">
-            <h2 className="text-4xl font-extrabold mb-4">Up and Running in Minutes</h2>
-            <p className="text-xl text-slate-400 max-w-2xl mx-auto">No complex onboarding. Just sign up and start executing.</p>
+            <h2 className="text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl font-extrabold mb-4">Up and Running in Minutes</h2>
+            <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto">No complex onboarding. Just sign up and start executing.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 relative gsap-stagger">
@@ -277,10 +293,10 @@ export default async function LandingPage() {
         <div className="max-w-[1400px] mx-auto px-6 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div className="gsap-fade-up">
             <div className="text-indigo-600 dark:text-indigo-400 font-bold tracking-wider uppercase text-sm mb-4">Architecture</div>
-            <h2 className="text-4xl font-extrabold text-slate-900 dark:text-white leading-tight mb-6">
+            <h2 className="text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-extrabold text-slate-900 dark:text-white leading-tight mb-6">
               One Platform. <br />Separate Workspaces.
             </h2>
-            <p className="text-lg text-slate-500 dark:text-slate-400 mb-8 leading-relaxed">
+            <p className="text-base md:text-lg text-slate-500 dark:text-slate-400 mb-8 leading-relaxed">
               Maintain strict data boundaries between different clients or internal departments. Switch between workspaces instantly without logging out.
             </p>
             <Link href="/register" className="inline-flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-bold hover:text-indigo-700 dark:hover:text-indigo-300 transition">
@@ -330,24 +346,24 @@ export default async function LandingPage() {
       <section className="py-16 md:py-24 border-y border-slate-100 dark:border-slate-800/50">
         <div className="max-w-[1400px] mx-auto px-6">
           <div className="text-center mb-16 gsap-fade-up">
-            <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white">Built for Teams at Every Stage</h2>
+            <h2 className="text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl font-extrabold text-slate-900 dark:text-white">Built for Teams at Every Stage</h2>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 divide-x divide-slate-100 dark:divide-slate-800 text-center gsap-stagger">
             <div>
-              <h3 className="text-5xl font-black text-indigo-600 dark:text-indigo-500 mb-2">99.9%</h3>
-              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Uptime SLA</p>
+              <h3 className="text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-black text-indigo-600 dark:text-indigo-500 mb-2">99.9%</h3>
+              <p className="text-xs md:text-sm font-semibold text-slate-500 dark:text-slate-400">Uptime SLA</p>
             </div>
             <div>
-              <h3 className="text-5xl font-black text-indigo-600 dark:text-indigo-500 mb-2">10x</h3>
-              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Faster Execution</p>
+              <h3 className="text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-black text-indigo-600 dark:text-indigo-500 mb-2">10x</h3>
+              <p className="text-xs md:text-sm font-semibold text-slate-500 dark:text-slate-400">Faster Execution</p>
             </div>
             <div>
-              <h3 className="text-5xl font-black text-indigo-600 dark:text-indigo-500 mb-2">24/7</h3>
-              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Expert Support</p>
+              <h3 className="text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-black text-indigo-600 dark:text-indigo-500 mb-2">24/7</h3>
+              <p className="text-xs md:text-sm font-semibold text-slate-500 dark:text-slate-400">Expert Support</p>
             </div>
             <div>
-              <h3 className="text-5xl font-black text-indigo-600 dark:text-indigo-500 mb-2">∞</h3>
-              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Scalability</p>
+              <h3 className="text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-black text-indigo-600 dark:text-indigo-500 mb-2">∞</h3>
+              <p className="text-xs md:text-sm font-semibold text-slate-500 dark:text-slate-400">Scalability</p>
             </div>
           </div>
         </div>
@@ -357,8 +373,8 @@ export default async function LandingPage() {
       <section id="pricing" className="py-16 md:py-24 bg-slate-50/50 dark:bg-slate-900/20">
         <div className="max-w-[1400px] mx-auto px-6">
           <div className="text-center max-w-2xl mx-auto mb-16 gsap-fade-up">
-            <h2 className="text-4xl font-extrabold text-slate-900 dark:text-white mb-4">Simple, Transparent Pricing</h2>
-            <p className="text-lg text-slate-500 dark:text-slate-400">
+            <h2 className="text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-extrabold text-slate-900 dark:text-white mb-4">Simple, Transparent Pricing</h2>
+            <p className="text-base md:text-lg text-slate-500 dark:text-slate-400">
               Start for free, upgrade when you need more power. No hidden fees.
             </p>
           </div>
@@ -369,7 +385,7 @@ export default async function LandingPage() {
               <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{PLAN_META.FREE.name}</h3>
               <p className="text-slate-500 dark:text-slate-400 text-sm mb-6">Perfect for individuals and small teams.</p>
               <div className="flex items-baseline gap-1 mb-8">
-                <span className="text-5xl font-black text-slate-900 dark:text-white">${PLAN_META.FREE.price}</span>
+                <span className="text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-black text-slate-900 dark:text-white">${PLAN_META.FREE.price}</span>
                 <span className="text-sm font-semibold text-slate-500 dark:text-slate-400">/ forever</span>
               </div>
 
@@ -400,7 +416,7 @@ export default async function LandingPage() {
               <h3 className="text-2xl font-bold text-white mb-2">{PLAN_META.PRO.name}</h3>
               <p className="text-indigo-200 text-sm mb-6">For growing teams needing advanced features.</p>
               <div className="flex items-baseline gap-1 mb-8">
-                <span className="text-5xl font-black text-white">${PLAN_META.PRO.price}</span>
+                <span className="text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-black text-white">${PLAN_META.PRO.price}</span>
                 <span className="text-sm font-semibold text-indigo-200">/ {PLAN_META.PRO.billingInterval.toLowerCase()}</span>
               </div>
 
@@ -428,7 +444,7 @@ export default async function LandingPage() {
       <section className="py-16 md:py-24 border-y border-slate-100 dark:border-slate-800/50">
         <div className="max-w-[1400px] mx-auto px-6">
           <div className="text-center mb-16 gsap-fade-up">
-            <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white">Built with Security in Mind</h2>
+            <h2 className="text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl font-extrabold text-slate-900 dark:text-white">Built with Security in Mind</h2>
           </div>
           <div className="grid md:grid-cols-4 gap-6 gsap-stagger">
             {[
@@ -453,7 +469,7 @@ export default async function LandingPage() {
       <section id="faq" className="py-16 md:py-24">
         <div className="max-w-3xl mx-auto px-6">
           <div className="text-center mb-16 gsap-fade-up">
-            <h2 className="text-4xl font-extrabold text-slate-900 dark:text-white mb-4">Frequently Asked Questions</h2>
+            <h2 className="text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl font-extrabold text-slate-900 dark:text-white mb-4">Frequently Asked Questions</h2>
           </div>
 
           <div className="space-y-4 gsap-stagger">
@@ -494,7 +510,7 @@ export default async function LandingPage() {
       <div className="bg-slate-950 text-white">
         <section className="py-16 md:py-24 border-b border-slate-800">
           <div className="max-w-[1400px] mx-auto px-6 text-center gsap-fade-up">
-            <h2 className="text-5xl font-extrabold mb-8">Bring Your Team's Work Into Focus</h2>
+            <h2 className="text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-extrabold mb-8">Bring Your Team's Work Into Focus</h2>
             <Link
               href={session?.user ? "/dashboard" : "/register"}
               className="inline-flex items-center gap-2 px-8 py-4 text-lg font-bold text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 transition shadow-lg shadow-indigo-600/20"
