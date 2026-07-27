@@ -5,5 +5,5 @@ export default NextAuth(authConfig).auth;
 
 export const config = {
   // Protect all dashboard, projects, tasks, team, settings, and billing routes
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|.*\\.png$).*)'],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:png|jpg|jpeg|svg|webp|gif)$).*)'],
 };
