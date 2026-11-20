@@ -1,174 +1,243 @@
-# TeamFlow — Multi-Tenant SaaS Workspace & Task Management
+# TeamFlow — Multi-Tenant SaaS Workspace & Project Management Platform
 
-TeamFlow is a production-ready, multi-tenant Software-as-a-Service (SaaS) application designed for structured project management, task collaboration, and team administration. Built with high-security tenant isolation, role-based access controls, and Stripe subscription gating.
+[![Next.js](https://img.shields.io/badge/Next.js-16.2-black?style=flat&logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19-blue?style=flat&logo=react)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=flat&logo=typescript)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.0-38B2AC?style=flat&logo=tailwind-css)](https://tailwindcss.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-green?style=flat&logo=mongodb)](https://www.mongodb.com/)
+[![Stripe](https://img.shields.io/badge/Stripe-Billing-6772E5?style=flat&logo=stripe)](https://stripe.com/)
 
----
-
-## 🚀 Tech Stack
-
-- **Framework:** Next.js 16 (App Router)
-- **Language:** TypeScript
-- **Database:** MongoDB
-- **ODM:** Mongoose
-- **Authentication:** NextAuth.js (Auth.js v5)
-- **Form Handling & Validation:** Formik & Yup
-- **Payments & Billing:** Stripe (Hosted Checkout & Webhooks)
-- **Styling:** Tailwind CSS / Vanilla CSS
-- **Deployment:** Vercel
+**TeamFlow** is an enterprise-grade, multi-tenant Software-as-a-Service (SaaS) platform built with **Next.js 16 (App Router)**, **TypeScript**, **MongoDB (Mongoose)**, **NextAuth.js v5**, and **Stripe**. It provides secure tenant isolation, role-based access control (RBAC), team workspaces, task tracking, and tiered subscription monetization.
 
 ---
 
-## 📂 SaaS Architecture
+## ✨ Features
 
-TeamFlow uses a multi-tenant isolation pattern where all business data is strictly partitioned at the database layer.
+### 🏢 Multi-Tenant Workspaces
+- **Workspace Isolation:** Every resource (Projects, Tasks, Comments, Team Members) is partitioned strictly by `tenantId` at the database level to ensure zero data leakage between organizations.
+- **Multi-Tenant Memberships:** A single user account can create or belong to multiple workspaces and seamlessly switch contexts without re-authenticating.
+- **Custom Branding & Settings:** Workspaces support custom naming, logos, descriptions, and soft-delete/restore capabilities.
 
-### Workspace & Identity Scope
+### 👥 Role-Based Access Control (RBAC)
+- **Granular Permissions:** Pre-configured with three strict roles: `OWNER`, `ADMIN`, and `MEMBER`.
+- **Permission Enforcement:** Checked both at the Next.js API layer (route handlers) and server-rendered view layer.
+- **Secure Invitations:** Workspace owners and admins can invite team members via secure tokenized email links.
+
+### 📋 Project & Task Management
+- **Projects:** Organize work into isolated projects with status, descriptions, and progress indicators.
+- **Task Collaboration:** Rich task creation with assignees, due dates, priority tiers (`LOW`, `MEDIUM`, `HIGH`, `URGENT`), and status workflows (`TODO`, `IN_PROGRESS`, `DONE`).
+- **Discussion & Comments:** Comment threads per task for direct team collaboration.
+- **Filtering & Search:** Real-time client-side and server-side filtering by assignee, status, priority, and keywords.
+
+### 💳 Stripe Subscription Billing & Gating
+- **Tiered Model:**
+  - **Free Tier:** Default for all new workspaces (capped at 2 Projects, 3 Members, 10 Tasks per project).
+  - **Pro Tier ($15/month):** Unlocks unlimited projects, unlimited team members, and unlimited tasks.
+- **Hosted Stripe Checkout:** Clean checkout redirection powered by Stripe Customer Sessions.
+- **Webhook Reconciliation:** Synchronizes subscription status (`checkout.session.completed`, `invoice.payment_succeeded`, `customer.subscription.deleted`, `customer.subscription.updated`).
+- **Graceful Downgrade:** Preserves historical data if an account downgrades to Free.
+
+### 🛡️ Platform Admin Dashboard
+- **System Overview:** Platform-level analytics, active tenants, total users, and revenue trends.
+- **Tenant Management:** View all workspaces, inspect membership health, and suspend or manage tenants.
+- **Activity Logs:** Audit trail tracking high-level platform events and billing actions.
+
+### 🎨 Modern UI & UX
+- **Theming:** Full Dark Mode and Light Mode support with smooth transition animations.
+- **Responsive Design:** Optimized for mobile, tablet, and desktop viewports with a collapsible sidebar.
+- **Feedback & Usability:** Instant visual feedback, skeleton loading states, empty states, and error boundary handling.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Framework:** [Next.js 16](https://nextjs.org/) (App Router & Turbopack)
+- **Frontend:** [React 19](https://react.dev/), [Tailwind CSS v4](https://tailwindcss.com/), [Lucide React Icons](https://lucide.dev/), [GSAP](https://greensock.com/gsap/)
+- **Backend:** Next.js Route Handlers & Server Actions
+- **Database & ODM:** [MongoDB](https://www.mongodb.com/) via [Mongoose](https://mongoosejs.com/)
+- **Authentication:** [NextAuth.js (v5 / Auth.js)](https://authjs.dev/) with `bcryptjs`
+- **Forms & Validation:** [Formik](https://formik.org/) & [Yup](https://github.com/jquense/yup)
+- **Payments:** [Stripe API & Webhooks](https://stripe.com/docs/api)
+- **Email Delivery:** [Nodemailer](https://nodemailer.com/) (Resend SMTP)
+
+---
+
+## 📐 Architecture & Data Model
+
 ```
-USER ──(registers)
-  │
-  └── MEMBERSHIP ──(belongs to)── TENANT (Workspace)
-         │
-         └── ROLE (OWNER, ADMIN, MEMBER) ──(determines)── AUTHORIZATION
+       +--------------------------------------------------+
+       |                   USER ACCOUNT                   |
+       |             (Global Auth & Identity)             |
+       +-------------------------+------------------------+
+                                 |
+                                 | 1..* Memberships
+                                 v
+       +--------------------------------------------------+
+       |               TENANT (Workspace)                 |
+       |  - tenantId (enforces query isolation boundary)  |
+       |  - Subscription (Free / Pro)                     |
+       +-------+-------------------+------------------+---+
+               |                   |                  |
+      1..*     |          1..*     |         1..*     |
+               v                   v                  v
+     +-------------------+ +---------------+ +-----------------+
+     |      PROJECTS     | |  INVITATIONS  | |  NOTIFICATIONS  |
+     +---------+---------+ +---------------+ +-----------------+
+               |
+      1..*     |
+               v
+     +-------------------+
+     |       TASKS       |
+     +---------+---------+
+               |
+      1..*     |
+               v
+     +-------------------+
+     |     COMMENTS      |
+     +-------------------+
 ```
 
-* **Users** can own or join multiple **Tenants** (Workspaces) via **Memberships**.
-* The **Role** assigned to a membership dictates the server-side **Authorization** checks.
-* **Tenant Isolation** is enforced at the database level: every collection document carries a `tenantId` field, and all queries are strictly filtered by the active tenant ID.
+### Role Permissions Matrix
 
-### Subscription & Resource Scope
-```
-TENANT (Workspace)
-  │
-  └── SUBSCRIPTION (Local DB Doc) ──(synced via Stripe Webhook)
-         │
-         └── PLAN (FREE, PRO)
-                │
-                └── FEATURE LIMITS (Projects, Members, Tasks)
-```
-
-* **Billing belongs to the Tenant**, not the individual User.
-* The Tenant's active **Subscription** is linked to a Stripe Customer ID.
-* The subscription maps to a **Plan** (FREE or PRO) that governs resource limits.
+| Capability | OWNER | ADMIN | MEMBER |
+|:---|:---:|:---:|:---:|
+| View Projects & Tasks | ✅ | ✅ | ✅ |
+| Create & Edit Tasks | ✅ | ✅ | ✅ |
+| Create Projects | ✅ | ✅ | ❌ |
+| Invite Members | ✅ | ✅ | ❌ |
+| Remove Members | ✅ | ✅ | ❌ |
+| Promote / Demote Roles | ✅ | ❌ | ❌ |
+| Upgrade to Pro / Stripe Portal | ✅ | ❌ | ❌ |
+| Delete / Rename Workspace | ✅ | ❌ | ❌ |
 
 ---
 
-## 🔒 Role Permissions Matrix
-
-| Feature | OWNER | ADMIN | MEMBER |
-| :--- | :---: | :---: | :---: |
-| View Team Members | ✓ | ✓ | ✓ |
-| Invite/Add New Members | ✓ | ✓ | ✗ |
-| Remove `MEMBER` seats | ✓ | ✓ | ✗ |
-| Remove `ADMIN` seats | ✓ | ✗ | ✗ |
-| Manage Roles (Promote/Demote) | ✓ | ✗ | ✗ |
-| View Billing & Limits | ✓ | ✓ | ✓ |
-| Upgrade Workspace to Pro | ✓ | ✗ | ✗ |
-| Manage Stripe Subscriptions | ✓ | ✗ | ✗ |
-| Create Projects & Tasks | ✓ | ✓ | ✗ |
-
----
-
-## 💳 Billing & Stripe Integration
-
-1. **Free Tier:** Limited to **2 Projects**, **3 Team Members**, and **10 Tasks per project**.
-2. **Pro Tier ($15/month):** Unlocks unlimited projects, members, and tasks.
-3. **Billing Lifecycle (Stripe Webhook):**
-   * **Stripe Checkout:** Initiates secure sessions via `/api/billing/checkout` (restricted to OWNERs).
-   * **State Synchronization:** The `/api/billing/webhook` route listens for Stripe events to synchronize state:
-     * `checkout.session.completed` $\rightarrow$ Activates Pro plan, saves Stripe subscription IDs.
-     * `invoice.payment_succeeded` $\rightarrow$ Records transaction logs in the local `Payment` collection.
-     * `customer.subscription.deleted` $\rightarrow$ Gracefully downgrades the workspace back to the Free plan (without deleting historical data).
-     * `customer.subscription.updated` / `invoice.payment_failed` $\rightarrow$ Syncs period end dates and tags overdue statuses (`PAST_DUE`).
-   * **Webhook Security:** Strictly validates Stripe signatures using the raw request payload buffer before updating the database.
-
----
-
-## 🛠️ Local Development Setup
+## 🚀 Getting Started
 
 ### 1. Prerequisites
-- Node.js (v20+ or v22+)
-- MongoDB (Local instance or Atlas connection URI)
-- Stripe account (for Test Mode Keys)
-- Stripe CLI (for webhook forwarding)
+- **Node.js** (v20+ or v22+ recommended)
+- **npm** or **pnpm**
+- **MongoDB** instance (Local or [MongoDB Atlas](https://www.mongodb.com/atlas))
+- **Stripe Account** (for API keys in test mode)
+- *(Optional)* [Stripe CLI](https://stripe.com/docs/stripe-cli) for testing webhooks locally
 
-### 2. Environment Configuration
-Create a `.env.local` file in the root directory:
+### 2. Clone Repository & Install Dependencies
+```bash
+git clone https://github.com/1991Rajib/teamflow-app.git
+cd teamflow-app
+npm install
+```
+
+### 3. Configure Environment Variables
+Copy the example environment configuration:
+```bash
+cp .env.example .env.local
+```
+
+Fill in your configuration values in `.env.local`:
 ```env
-MONGODB_URI=mongodb+srv://...
-AUTH_SECRET=your_next_auth_secret_key
+# MongoDB Connection URI
+MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/teamflow?retryWrites=true&w=majority
+
+# NextAuth Secret (Generate via `openssl rand -hex 32`)
+AUTH_SECRET=your_auth_secret_key
+
+# Public App URL
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# Stripe Credentials
 STRIPE_SECRET_KEY=sk_test_...
 STRIPE_WEBHOOK_SECRET=whsec_...
 STRIPE_PRO_PRICE_ID=price_...
-NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# SMTP / Email Configuration (e.g. Resend)
+SMTP_HOST=smtp.resend.com
+SMTP_PORT=465
+SMTP_USER=resend
+SMTP_PASSWORD=your_resend_api_key
+EMAIL_FROM="TeamFlow <onboarding@resend.dev>"
 ```
 
-### 3. Installation & Run commands
+### 4. Seed Plans in MongoDB
+Initialize the default **Free** and **Pro** subscription tiers:
 ```bash
-# 1. Install dependencies
-npm install
-
-# 2. Seed the FREE and PRO plans into your database
 node scripts/seed-plans.js
+```
 
-# 3. Start Stripe webhook forwarding (in a separate terminal)
-stripe listen --forward-to localhost:3000/api/billing/webhook
-
-# 4. Start Next.js development server
+### 5. Start Development Server
+```bash
 npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-# 5. Build for production compilation checks
-npm run build
+---
+
+## 💳 Stripe Webhook Testing (Local Development)
+
+To test Stripe billing and automated subscription synchronization locally:
+
+1. Log in to the Stripe CLI:
+   ```bash
+   stripe login
+   ```
+2. Forward events to your local API route:
+   ```bash
+   stripe listen --forward-to localhost:3000/api/billing/webhook
+   ```
+3. Copy the webhook signing secret printed by the CLI (`whsec_...`) into `STRIPE_WEBHOOK_SECRET` in `.env.local`.
+4. Trigger checkout in the app and test upgrades using the standard Stripe test card `4242 4242 4242 4242`.
+
+---
+
+## 📦 Project Structure
+
+```
+teamflow-app/
+├── public/                 # Static assets & dashboard previews
+├── scripts/                # Database seeds & setup utilities
+├── src/
+│   ├── app/                # Next.js 16 App Router
+│   │   ├── (admin)/        # Platform admin console routes
+│   │   ├── (app)/          # Protected workspace routes (dashboard, projects, tasks, billing, team)
+│   │   ├── (auth)/         # Auth pages (login, register)
+│   │   ├── api/            # Route Handlers (auth, billing, tasks, projects, team, tenants)
+│   │   └── onboarding/     # Initial workspace creation flow
+│   ├── components/         # Reusable UI components & dialogs
+│   ├── config/             # Plan configurations & resource limits
+│   ├── lib/                # Database connection, auth helpers, Stripe client, email service
+│   ├── models/             # Mongoose schemas (Tenant, User, Project, Task, Subscription, etc.)
+│   ├── types/              # TypeScript declarations
+│   ├── middleware.ts       # Route protection & session interception
+│   └── auth.ts             # NextAuth configuration
+├── .env.example            # Environment template
+├── next.config.ts          # Next.js config
+├── tsconfig.json           # TypeScript configuration
+└── package.json            # Project dependencies and scripts
 ```
 
 ---
 
-## ☁️ Vercel Deployment Guide
+## 📜 Available Scripts
 
-1. Push your linked Git repository to GitHub/GitLab.
-2. Import the repository into your **Vercel Dashboard**.
-3. Configure the 6 Environment Variables listed in the configuration section (keep server keys non-public).
-4. Click **Deploy**.
-5. Once deployed, copy your live domain (e.g. `https://teamflow-app.vercel.app`) and update the `NEXT_PUBLIC_APP_URL` variable in Vercel to match this live production domain.
-6. Go to **Stripe Dashboard $\rightarrow$ Developers $\rightarrow$ Webhooks**, create a new webhook endpoint pointing to `https://your-domain.vercel.app/api/billing/webhook`, copy the webhook signing secret, and update Vercel's `STRIPE_WEBHOOK_SECRET` environment key.
-
----
-
-## 🧪 Stripe Test Mode Instructions
-
-1. Log in to your TeamFlow workspace as the **OWNER**.
-2. Navigate to the **Billing** panel.
-3. Verify that your current plan is displayed as **Free Plan**.
-4. Click **Upgrade to Pro — $15/month**.
-5. You will be redirected to the secure, Stripe-hosted hosted checkout portal.
-6. Fill in the payment form using the Stripe test card:
-   - **Card Number:** `4242 4242 4242 4242`
-   - **Expiry:** Any future date (e.g., `12/28`)
-   - **CVC:** Any 3 digits (e.g., `123`)
-7. Click **Subscribe**.
-8. After checkout completes, Stripe will redirect you back to `/billing?session=success`. The background Stripe Webhook will synchronize status in the database, instantly upgrading your dashboard view to **Pro Plan** with unlocked limits.
+| Command | Description |
+|:---|:---|
+| `npm run dev` | Starts the Next.js development server with Turbopack |
+| `npm run build` | Builds the production-optimized application |
+| `npm run start` | Runs the compiled production server |
+| `npm run lint` | Runs ESLint checks across the codebase |
 
 ---
 
-## 🎬 5-10 Minute Demonstration Flow
+## ☁️ Deployment
 
-* **Step 1: Unauthenticated Landing** — Visit `/`. Verify that the middleware intercepts the guest access and redirects immediately to `/login`.
-* **Step 2: User Sign Up & Tenant Creation** — Click register, sign up a new account, and name your workspace (e.g. "Acme Corp").
-* **Step 3: Dashboard Limits Check** — Verify that the new workspace has the **Free Plan** active, showing progress meters capped at 2 projects, 10 tasks, and 3 team members.
-* **Step 4: Create Projects (Free limit)** — Create two active projects ("Project Alpha", "Project Beta"). Try to create a third; verify that the app redirects to a "Project Limit Reached" alert screen.
-* **Step 5: Create Tasks (Free limit)** — Open Project Alpha and add 10 tasks. Try to add an 11th; verify that the server-side block intercepts and blocks task creation.
-* **Step 6: Team seats (Free limit)** — Navigate to Team page. Add two users. Try to add a third; verify that team seats are capped.
-* **Step 7: Role verification (MEMBER)** — Log in as one of the newly added members. Open projects/tasks and notice they can view them, but all "Create" buttons are hidden and direct API calls are blocked.
-* **Step 8: Pro Upgrade Flow** — Log back in as the OWNER. Go to Billing and click **Upgrade to Pro**.
-* **Step 9: Complete Checkout** — Pay with the `4242` Stripe test card.
-* **Step 10: Verified Upgrade** — Return to the dashboard. The plan status is now **Pro** and all project/task limits are fully unlocked.
-* **Step 11: Tenant Isolation check** — Create a second tenant workspace ("Beta Labs"). Verify that Acme Corp projects and tasks do not bleed into the new workspace.
+TeamFlow is optimized for zero-configuration deployment on **Vercel**:
+1. Push your repository to GitHub.
+2. Import the project on [Vercel](https://vercel.com).
+3. Add all environment variables from `.env.example`.
+4. Deploy and set up your production Stripe webhook pointing to `https://your-domain.com/api/billing/webhook`.
 
 ---
 
-## 🎤 Core SaaS Architect Concepts (Interview Pitch)
+## 📄 License
 
-* **Authentication:** NextAuth (Auth.js v5) handles token validation, caching credentials, and securing API endpoints.
-* **Multi-Tenancy:** We partition organizational workspaces via `Tenant` models. Users belong to Tenants through `Memberships`, allowing a single user account to join multiple workspaces without duplicate authentication profiles.
-* **RBAC:** Fine-grained authorization checks differentiate between `OWNER`, `ADMIN`, and `MEMBER` roles at the endpoint and view layer.
-* **Stripe Billing:** Billing is workspace-scoped, not user-scoped. Webhooks serve as the single source of truth for payment reconciliation and subscription lifecycles.
-* **Tenant Isolation:** Every read, create, update, or delete request strictly queries with `{ tenantId }` resolved server-side from session contexts to guarantee zero data bleed.
+This project is licensed under the MIT License.
